@@ -1,0 +1,19 @@
+{
+  "name": "chrome-inspector-suite",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A suite of small, local-only Chrome MV3 inspector extensions. No backend, no tracking, no build step.",
+  "scripts": {
+    "test": "node tools/sync-shared.mjs --check && node --test \"test/*.test.js\" \"extensions/*/test/*.test.js\"",
+    "test:only": "node --test \"test/*.test.js\" \"extensions/*/test/*.test.js\"",
+    "sync": "node tools/sync-shared.mjs",
+    "icons": "node tools/make-icons.mjs",
+    "check": "node tools/check-extensions.mjs",
+    "listings": "node tools/make-listings.mjs",
+    "package": "npm test && node tools/check-extensions.mjs && node tools/package.mjs",
+    "release": "node tools/scaffold.mjs && node tools/sync-shared.mjs && node tools/make-readmes.mjs && node tools/make-listings.mjs && npm run package",
+    "shot": "node tools/fit-screenshot.mjs"
+  },
+  "license": "MIT"
+}

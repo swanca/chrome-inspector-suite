@@ -1,0 +1,13 @@
+/* Schema Inspector theme. Loaded after base.css so it wins. */
+
+/* --- generated: accent (tools/scaffold.mjs) --- */
+:root {
+  --accent: #7c3aed;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --accent: #c4a6f7;
+  }
+}
+/* --- end generated --- */

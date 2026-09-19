@@ -1,0 +1,13 @@
+/* Page to Markdown theme. Loaded after base.css so it wins. */
+
+/* --- generated: accent (tools/scaffold.mjs) --- */
+:root {
+  --accent: #0f766e;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --accent: #93c1be;
+  }
+}
+/* --- end generated --- */

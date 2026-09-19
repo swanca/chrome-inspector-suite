@@ -1,0 +1,13 @@
+node_modules/
+*.zip
+.DS_Store
+
+# Licensing private key - must never be committed or shipped
+.keys/
+
+dist/
+
+store-assets/
+
+# Commercial planning stays local
+MONETISATION.md

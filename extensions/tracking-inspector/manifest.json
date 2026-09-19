@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "Tracking Inspector - Find GTM, GA4, Meta Pixel & Trackers",
+  "version": "1.4.0",
+  "description": "See every analytics and advertising tag a page loads, with their IDs. 100% local - no tracking, no data collected.",
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_title": "Tracking Inspector",
+    "default_popup": "src/popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png"
+    }
+  },
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage"
+  ]
+}

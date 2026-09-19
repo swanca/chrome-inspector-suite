@@ -1,0 +1,13 @@
+/* Link Extractor theme. Loaded after base.css so it wins. */
+
+/* --- generated: accent (tools/scaffold.mjs) --- */
+:root {
+  --accent: #2563eb;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --accent: #9db9f6;
+  }
+}
+/* --- end generated --- */

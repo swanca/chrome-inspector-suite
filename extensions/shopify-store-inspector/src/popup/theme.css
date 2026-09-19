@@ -1,0 +1,13 @@
+/* Shopify Store Inspector theme. Loaded after base.css so it wins. */
+
+/* --- generated: accent (tools/scaffold.mjs) --- */
+:root {
+  --accent: #16a34a;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --accent: #96d6ae;
+  }
+}
+/* --- end generated --- */

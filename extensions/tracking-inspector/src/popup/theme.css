@@ -1,0 +1,13 @@
+/* Tracking Inspector theme. Loaded after base.css so it wins. */
+
+/* --- generated: accent (tools/scaffold.mjs) --- */
+:root {
+  --accent: #dc2626;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --accent: #ef9d9d;
+  }
+}
+/* --- end generated --- */

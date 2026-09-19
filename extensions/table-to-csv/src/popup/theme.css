@@ -1,0 +1,13 @@
+/* Table to CSV theme. Loaded after base.css so it wins. */
+
+/* --- generated: accent (tools/scaffold.mjs) --- */
+:root {
+  --accent: #ca8a04;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --accent: #e7ca8e;
+  }
+}
+/* --- end generated --- */

@@ -1,0 +1,52 @@
+/* SEO Inspector theme. Loaded after base.css so it wins. */
+
+/* --- generated: accent (tools/scaffold.mjs) --- */
+:root {
+  --accent: #4f46e5;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --accent: #b0acf3;
+  }
+}
+/* --- end generated --- */
+
+/* --- Social preview card --------------------------------------------------- */
+
+.preview {
+  margin: 8px 12px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--bg-sunken);
+}
+
+.preview__image {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1.91 / 1;
+  object-fit: cover;
+  background: var(--border);
+}
+
+.preview__body {
+  padding: 8px 10px;
+}
+
+.preview__host {
+  color: var(--text-muted);
+  font-size: 11px;
+  text-transform: lowercase;
+}
+
+.preview__title {
+  margin: 2px 0;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.preview__description {
+  color: var(--text-muted);
+  overflow-wrap: anywhere;
+}

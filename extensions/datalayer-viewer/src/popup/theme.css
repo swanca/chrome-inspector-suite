@@ -1,0 +1,13 @@
+/* DataLayer Viewer theme. Loaded after base.css so it wins. */
+
+/* --- generated: accent (tools/scaffold.mjs) --- */
+:root {
+  --accent: #ea580c;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --accent: #f6b492;
+  }
+}
+/* --- end generated --- */
