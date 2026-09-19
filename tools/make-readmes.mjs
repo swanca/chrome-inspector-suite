@@ -13,49 +13,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { EXTENSIONS } from './extensions.mjs';
-import { FEATURES, PRO_BY_DEFAULT } from '../shared/entitlements.js';
 import { CONTENT } from './content.mjs';
-
-/** Human labels for the gated features, mirroring shared/license-ui.js. */
-const LABELS = {
-  'export-json': 'Export as JSON',
-  'export-csv': 'Export as CSV',
-  'export-md': 'Export as Markdown',
-  'social-preview': 'Social sharing preview',
-  'tag-ids': 'Tag identifier extraction',
-  audit: 'Storefront audit',
-  variants: 'Variant table',
-  'raw-tree': 'Raw data tree',
-  refresh: 'Live refresh',
-  uncapped: 'Uncapped copy and export',
-  'front-matter': 'YAML front matter',
-  delimiter: 'Delimiter choice',
-  evidence: 'Detection evidence',
-  versions: 'Library versions',
-};
-
-/**
- * Labels for the free-tier features. Kept separate from LABELS because an id
- * can mean different things either side of the gate: 'audit' is the whole point
- * of SEO Inspector and free there, while in Shopify Store Inspector it is the
- * paid storefront audit.
- */
-const FREE_LABELS = {
-  audit: 'Full audit',
-  copy: 'Copy to clipboard',
-  filters: 'Filters',
-  detect: 'Detection',
-  evidence: 'Detection evidence',
-  details: 'Store details',
-  apps: 'App detection',
-  validate: 'Validation',
-  thumbnails: 'Thumbnails',
-  browse: 'Browse the tree',
-  search: 'Search',
-  extract: 'Extraction',
-  convert: 'Conversion',
-  preview: 'Preview',
-};
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -90,22 +48,6 @@ function readmeFor(extension) {
     lines.push('');
   }
 
-  lines.push('## What you get');
-  lines.push('');
-  if (PRO_BY_DEFAULT) {
-    lines.push(
-      'Everything. There is no paid tier, no account and no trial - every feature ' +
-        'below works the moment you install it.'
-    );
-    lines.push('');
-    for (const item of FEATURES[extension.slug].pro) {
-      lines.push('- ' + (LABELS[item] || item));
-    }
-  } else {
-    lines.push('Inspection is free. Pro adds: ' +
-      FEATURES[extension.slug].pro.map((f) => LABELS[f] || f).join(', ') + '.');
-  }
-  lines.push('');
   lines.push('---');
   lines.push('');
   lines.push('## Install locally (Load unpacked)');
@@ -133,14 +75,9 @@ function readmeFor(extension) {
   lines.push(
     '| `scripting` | Required to run the read-only collector in the page and read what it needs. |'
   );
-  lines.push(
-    PRO_BY_DEFAULT
-      ? '| `storage`   | Keeps a single first-run timestamp on this device. Nothing else is stored, and nothing is ever transmitted. |'
-      : '| `storage`   | Holds your licence key on this device. Nothing else is stored, and nothing is ever transmitted. |'
-  );
   lines.push('');
   lines.push(
-    'That is the complete list. There is no background service worker, no `tabs` permission and no host permissions.'
+    'That is the complete list. There is no background service worker, no `storage`, no `tabs` permission and no host permissions.'
   );
   lines.push('');
 

@@ -62,9 +62,7 @@ function manifestFor(extension) {
           default_popup: 'src/popup/popup.html',
           default_icon: { 16: 'icons/icon16.png', 32: 'icons/icon32.png' },
         },
-        // storage holds the Pro license key on this device only; it grants no
-        // access to pages and is never read by anything but this extension.
-        permissions: ['activeTab', 'scripting', 'storage'],
+        permissions: ['activeTab', 'scripting'],
       },
       null,
       2

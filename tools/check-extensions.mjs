@@ -21,7 +21,7 @@ import { fileURLToPath } from 'node:url';
 import { EXTENSIONS } from './extensions.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
-const ALLOWED_PERMISSIONS = new Set(['activeTab', 'scripting', 'storage']);
+const ALLOWED_PERMISSIONS = new Set(['activeTab', 'scripting']);
 
 let failures = 0;
 

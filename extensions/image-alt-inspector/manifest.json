@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Image ALT Inspector - Alt Text & Accessibility Checker",
-  "version": "1.4.0",
+  "version": "2.0.0",
   "description": "Audit every image alt text on a page and export the list as CSV. 100% local - no tracking, no data collected.",
   "icons": {
     "16": "icons/icon16.png",
@@ -19,7 +19,6 @@
   },
   "permissions": [
     "activeTab",
-    "scripting",
-    "storage"
+    "scripting"
   ]
 }

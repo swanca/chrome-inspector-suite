@@ -11,7 +11,6 @@ import { auditSchema, toJson } from '../lib/schema.js';
 import { describeBlockedUrl, getActiveTab, runInPage } from '../shared/page.js';
 import { el, clear, createToast, showState, pill, jsonTree, showVersion } from '../shared/ui.js';
 import { exportFilename, copyText, downloadText } from '../shared/output.js';
-import { createLicenseGate } from '../shared/license-ui.js';
 
 const SLUG = 'schema-inspector';
 
@@ -26,18 +25,9 @@ const elements = {
   export: document.getElementById('export'),
   main: document.getElementById('main'),
   toast: document.getElementById('toast'),
-  pro: document.getElementById('pro'),
 };
 
 const toast = createToast(elements.toast);
-
-/** The Pro gate. Created first, because the button handlers close over it. */
-let gate = null;
-
-function renderBadge() {
-  clear(elements.pro);
-  elements.pro.appendChild(gate.badge());
-}
 
 /** @type {{data: object, audit: object}|null} */
 let state = null;
@@ -79,7 +69,7 @@ function renderParseError(block) {
   return section;
 }
 
-function renderEntity(entity, allowRaw) {
+function renderEntity(entity) {
   const onlyIssues = elements.onlyIssues.checked;
   const findings = onlyIssues
     ? entity.findings.filter((finding) => finding.status === 'error' || finding.status === 'warning')
@@ -94,7 +84,7 @@ function renderEntity(entity, allowRaw) {
 
   for (const finding of findings) section.appendChild(renderFinding(finding));
 
-  if (elements.raw.checked && allowRaw) {
+  if (elements.raw.checked) {
     const tree = el('div', 'tree');
     tree.appendChild(jsonTree(entity.properties, entity.type, 0, 1));
     section.appendChild(tree);
@@ -111,24 +101,13 @@ function render() {
     elements.main.appendChild(renderParseError(block));
   }
 
-  // The raw tree is gated, but half of it is shown rather than none.
-  const raw = gate.preview('raw-tree', state.audit.entities);
-  const rawAllowed = elements.raw.checked ? raw.shown.length : 0;
-
   let shown = 0;
-  let index = 0;
   for (const entity of state.audit.entities) {
-    const section = renderEntity(entity, index < rawAllowed);
+    const section = renderEntity(entity);
     if (section) {
       elements.main.appendChild(section);
       shown++;
     }
-    index++;
-  }
-
-  if (elements.raw.checked && raw.hidden > 0) {
-    const lock = gate.lockNotice('raw-tree', raw.hidden);
-    if (lock) elements.main.appendChild(lock);
   }
 
   if (!shown && !state.audit.parseErrors.length) {
@@ -180,23 +159,10 @@ function handleExport() {
 async function init() {
   showVersion(document.querySelector('.brand'));
 
-  gate = createLicenseGate({
-    slug: SLUG,
-    name: 'Schema Inspector',
-    main: elements.main,
-    toast,
-    onChange: () => {
-      renderBadge();
-      render();
-    },
-  });
-  await gate.load();
-  renderBadge();
-
   elements.onlyIssues.addEventListener('change', render);
   elements.raw.addEventListener('change', render);
   elements.copy.addEventListener('click', handleCopy);
-  elements.export.addEventListener('click', gate.require('export-json', handleExport));
+  elements.export.addEventListener('click', handleExport);
 
   try {
     const tab = await getActiveTab();

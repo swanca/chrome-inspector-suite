@@ -11,7 +11,6 @@ import { detectTrackers, extractIds, summarize, groupByCategory, toRows } from '
 import { describeBlockedUrl, getActiveTab, runInPage } from '../shared/page.js';
 import { el, clear, createToast, showState, pill, showVersion } from '../shared/ui.js';
 import { exportFilename, copyText, downloadText, toCsv } from '../shared/output.js';
-import { createLicenseGate } from '../shared/license-ui.js';
 
 const SLUG = 'tracking-inspector';
 
@@ -23,18 +22,9 @@ const elements = {
   export: document.getElementById('export'),
   main: document.getElementById('main'),
   toast: document.getElementById('toast'),
-  pro: document.getElementById('pro'),
 };
 
 const toast = createToast(elements.toast);
-
-/** The Pro gate. Created first, because the button handlers close over it. */
-let gate = null;
-
-function renderBadge() {
-  clear(elements.pro);
-  elements.pro.appendChild(gate.badge());
-}
 
 /** @type {{signals: object, detected: Array, ids: Array, summary: object}|null} */
 let state = null;
@@ -75,13 +65,10 @@ function renderTracker(tracker) {
 function renderIds() {
   if (!state.ids.length) return null;
 
-  const { shown, hidden } = gate.preview('tag-ids', state.ids);
-  if (!shown.length) return null;
-
   const section = el('section', 'group');
   section.appendChild(el('h2', 'group__title', 'Tag identifiers'));
 
-  for (const id of shown) {
+  for (const id of state.ids) {
     const item = el('div', 'item');
     const body = el('div', 'item__body');
     body.appendChild(el('div', 'item__title', id.value));
@@ -89,9 +76,6 @@ function renderIds() {
     item.appendChild(body);
     section.appendChild(item);
   }
-
-  const lock = gate.lockNotice('tag-ids', hidden);
-  if (lock) section.appendChild(lock);
 
   return section;
 }
@@ -176,22 +160,9 @@ function handleExport() {
 async function init() {
   showVersion(document.querySelector('.brand'));
 
-  gate = createLicenseGate({
-    slug: SLUG,
-    name: 'Tracking Inspector',
-    main: elements.main,
-    toast,
-    onChange: () => {
-      renderBadge();
-      render();
-    },
-  });
-  await gate.load();
-  renderBadge();
-
   elements.evidence.addEventListener('change', render);
   elements.copy.addEventListener('click', handleCopy);
-  elements.export.addEventListener('click', gate.require('export-csv', handleExport));
+  elements.export.addEventListener('click', handleExport);
 
   try {
     const tab = await getActiveTab();

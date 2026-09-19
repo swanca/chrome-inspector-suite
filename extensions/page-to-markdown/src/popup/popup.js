@@ -11,7 +11,6 @@ import { renderMarkdown } from '../lib/markdown.js';
 import { describeBlockedUrl, getActiveTab, runInPage } from '../shared/page.js';
 import { el, clear, createToast, showState, pill, showVersion } from '../shared/ui.js';
 import { exportFilename, copyText, downloadText } from '../shared/output.js';
-import { createLicenseGate } from '../shared/license-ui.js';
 
 const SLUG = 'page-to-markdown';
 
@@ -25,18 +24,9 @@ const elements = {
   export: document.getElementById('export'),
   main: document.getElementById('main'),
   toast: document.getElementById('toast'),
-  pro: document.getElementById('pro'),
 };
 
 const toast = createToast(elements.toast);
-
-/** The Pro gate. Created first, because the button handlers close over it. */
-let gate = null;
-
-function renderBadge() {
-  clear(elements.pro);
-  elements.pro.appendChild(gate.badge());
-}
 
 /** @type {{doc: object}|null} */
 let state = null;
@@ -45,7 +35,7 @@ function options() {
   return {
     links: elements.links.checked,
     images: elements.images.checked,
-    frontMatter: elements.frontMatter.checked && gate.can('front-matter'),
+    frontMatter: elements.frontMatter.checked,
   };
 }
 
@@ -102,24 +92,11 @@ function handleExport() {
 async function init() {
   showVersion(document.querySelector('.brand'));
 
-  gate = createLicenseGate({
-    slug: SLUG,
-    name: 'Page to Markdown',
-    main: elements.main,
-    toast,
-    onChange: () => {
-      renderBadge();
-      render();
-    },
-  });
-  await gate.load();
-  renderBadge();
-
   for (const control of [elements.links, elements.images, elements.frontMatter]) {
     control.addEventListener('change', render);
   }
   elements.copy.addEventListener('click', handleCopy);
-  elements.export.addEventListener('click', gate.require('export-md', handleExport));
+  elements.export.addEventListener('click', handleExport);
 
   try {
     const tab = await getActiveTab();

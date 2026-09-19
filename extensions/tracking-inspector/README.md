@@ -22,13 +22,6 @@ Everything runs inside your browser. No account, no server, no analytics, no sto
 - Detection is a snapshot of the moment you open the popup. A tag that only fires after consent, or later in the page lifecycle, will not appear until you reopen it.
 - Host matching is done by parsing, never by substring: `google-analytics.com.evil.test` is not Google Analytics.
 
-## What you get
-
-Everything. There is no paid tier, no account and no trial - every feature below works the moment you install it.
-
-- Export as CSV
-- Tag identifier extraction
-
 ---
 
 ## Install locally (Load unpacked)
@@ -49,9 +42,8 @@ To pick up code changes, press the reload arrow on the extension card in `chrome
 |-------------|-----|
 | `activeTab` | Grants access to the current tab **only at the moment you click the icon**, and only until you navigate away. This is why no `host_permissions` are needed and the extension has no access to your browsing history. |
 | `scripting` | Required to run the read-only collector in the page and read what it needs. |
-| `storage`   | Keeps a single first-run timestamp on this device. Nothing else is stored, and nothing is ever transmitted. |
 
-That is the complete list. There is no background service worker, no `tabs` permission and no host permissions.
+That is the complete list. There is no background service worker, no `storage`, no `tabs` permission and no host permissions.
 
 ## Privacy
 

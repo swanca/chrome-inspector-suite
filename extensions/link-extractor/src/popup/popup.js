@@ -18,7 +18,6 @@ import {
 import { describeBlockedUrl, getActiveTab, runInPage } from '../shared/page.js';
 import { el, clear, createToast, showState, pill, showVersion } from '../shared/ui.js';
 import { exportFilename, copyText, downloadText, toCsv } from '../shared/output.js';
-import { createLicenseGate } from '../shared/license-ui.js';
 
 const SLUG = 'link-extractor';
 
@@ -32,18 +31,9 @@ const elements = {
   export: document.getElementById('export'),
   main: document.getElementById('main'),
   toast: document.getElementById('toast'),
-  pro: document.getElementById('pro'),
 };
 
 const toast = createToast(elements.toast);
-
-/** The Pro gate. Created first, because the button handlers close over it. */
-let gate = null;
-
-function renderBadge() {
-  clear(elements.pro);
-  elements.pro.appendChild(gate.badge());
-}
 
 /** @type {{data: object, links: Array}|null} */
 let state = null;
@@ -128,16 +118,8 @@ async function handleCopy() {
   const links = visibleLinks();
   if (!links.length) return toast('Nothing to copy');
 
-  // Free copies are capped; the Pro tier lifts the limit.
-  const capped = links.slice(0, gate.limit());
-  const copied = await copyText(toPlainList(capped));
-
-  if (!copied) return toast('Copy failed');
-  toast(
-    capped.length < links.length
-      ? capped.length + ' of ' + links.length + ' URLs copied (Pro lifts the cap)'
-      : capped.length + ' URLs copied'
-  );
+  const copied = await copyText(toPlainList(links));
+  toast(copied ? links.length + ' URLs copied' : 'Copy failed');
 }
 
 function handleExport() {
@@ -157,19 +139,6 @@ function handleExport() {
 async function init() {
   showVersion(document.querySelector('.brand'));
 
-  gate = createLicenseGate({
-    slug: SLUG,
-    name: 'Link Extractor',
-    main: elements.main,
-    toast,
-    onChange: () => {
-      renderBadge();
-      render();
-    },
-  });
-  await gate.load();
-  renderBadge();
-
   for (const scope of SCOPES) {
     const option = document.createElement('option');
     option.value = scope.id;
@@ -184,7 +153,7 @@ async function init() {
     searchTimer = setTimeout(render, 120);
   });
   elements.copy.addEventListener('click', handleCopy);
-  elements.export.addEventListener('click', gate.require('export-csv', handleExport));
+  elements.export.addEventListener('click', handleExport);
 
   try {
     const tab = await getActiveTab();

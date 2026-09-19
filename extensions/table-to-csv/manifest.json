@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Table to CSV - Export HTML Tables to Excel & CSV",
-  "version": "1.4.0",
+  "version": "2.0.0",
   "description": "Convert any HTML table to CSV, colspan and rowspan included. 100% local - no tracking, no data collected.",
   "icons": {
     "16": "icons/icon16.png",
@@ -19,7 +19,6 @@
   },
   "permissions": [
     "activeTab",
-    "scripting",
-    "storage"
+    "scripting"
   ]
 }

@@ -9,7 +9,7 @@
  * Version stamped into every manifest, unless an extension overrides it with
  * its own `version` field. Bump this when you ship, so a reload is visible.
  */
-export const VERSION = '1.4.0';
+export const VERSION = '2.0.0';
 
 export const EXTENSIONS = [
   {

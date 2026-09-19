@@ -11,7 +11,6 @@ import { annotate, summarize, filterEntries, toJson } from '../lib/datalayer.js'
 import { describeBlockedUrl, getActiveTab, runInPage } from '../shared/page.js';
 import { el, clear, createToast, showState, pill, jsonTree, showVersion } from '../shared/ui.js';
 import { exportFilename, copyText, downloadText } from '../shared/output.js';
-import { createLicenseGate } from '../shared/license-ui.js';
 
 const SLUG = 'datalayer-viewer';
 
@@ -27,18 +26,9 @@ const elements = {
   export: document.getElementById('export'),
   main: document.getElementById('main'),
   toast: document.getElementById('toast'),
-  pro: document.getElementById('pro'),
 };
 
 const toast = createToast(elements.toast);
-
-/** The Pro gate. Created first, because the button handlers close over it. */
-let gate = null;
-
-function renderBadge() {
-  clear(elements.pro);
-  elements.pro.appendChild(gate.badge());
-}
 
 /** @type {{data: object, tabId: number}|null} */
 let state = null;
@@ -201,19 +191,6 @@ function handleExport() {
 async function init() {
   showVersion(document.querySelector('.brand'));
 
-  gate = createLicenseGate({
-    slug: SLUG,
-    name: 'DataLayer Viewer',
-    main: elements.main,
-    toast,
-    onChange: () => {
-      renderBadge();
-      render();
-    },
-  });
-  await gate.load();
-  renderBadge();
-
   elements.layer.addEventListener('change', () => {
     renderEventOptions();
     render();
@@ -223,9 +200,9 @@ async function init() {
     clearTimeout(searchTimer);
     searchTimer = setTimeout(renderEntries, 150);
   });
-  elements.refresh.addEventListener('click', gate.require('refresh', handleRefresh));
+  elements.refresh.addEventListener('click', handleRefresh);
   elements.copy.addEventListener('click', handleCopy);
-  elements.export.addEventListener('click', gate.require('export-json', handleExport));
+  elements.export.addEventListener('click', handleExport);
 
   try {
     const tab = await getActiveTab();

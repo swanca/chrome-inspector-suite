@@ -11,7 +11,6 @@ import { annotate, summarize, filterImages, toRows, FILTERS } from '../lib/alt.j
 import { describeBlockedUrl, getActiveTab, runInPage } from '../shared/page.js';
 import { el, clear, createToast, showState, pill, showVersion } from '../shared/ui.js';
 import { exportFilename, copyText, downloadText, toCsv } from '../shared/output.js';
-import { createLicenseGate } from '../shared/license-ui.js';
 
 const SLUG = 'image-alt-inspector';
 
@@ -25,18 +24,9 @@ const elements = {
   export: document.getElementById('export'),
   main: document.getElementById('main'),
   toast: document.getElementById('toast'),
-  pro: document.getElementById('pro'),
 };
 
 const toast = createToast(elements.toast);
-
-/** The Pro gate. Created first, because the button handlers close over it. */
-let gate = null;
-
-function renderBadge() {
-  clear(elements.pro);
-  elements.pro.appendChild(gate.badge());
-}
 
 /** @type {{data: object, images: Array}|null} */
 let state = null;
@@ -142,19 +132,6 @@ function handleExport() {
 async function init() {
   showVersion(document.querySelector('.brand'));
 
-  gate = createLicenseGate({
-    slug: SLUG,
-    name: 'Image ALT Inspector',
-    main: elements.main,
-    toast,
-    onChange: () => {
-      renderBadge();
-      render();
-    },
-  });
-  await gate.load();
-  renderBadge();
-
   for (const filter of FILTERS) {
     const option = document.createElement('option');
     option.value = filter.id;
@@ -164,7 +141,7 @@ async function init() {
 
   elements.filter.addEventListener('change', render);
   elements.copy.addEventListener('click', handleCopy);
-  elements.export.addEventListener('click', gate.require('export-csv', handleExport));
+  elements.export.addEventListener('click', handleExport);
 
   try {
     const tab = await getActiveTab();

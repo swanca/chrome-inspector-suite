@@ -16,26 +16,8 @@ import { fileURLToPath } from 'node:url';
 import { EXTENSIONS } from './extensions.mjs';
 import { CONTENT } from './content.mjs';
 import { LISTINGS, CATEGORIES } from './listings.mjs';
-import { FEATURES, PRO_BY_DEFAULT } from '../shared/entitlements.js';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
-
-const LABELS = {
-  'export-json': 'Export as JSON',
-  'export-csv': 'Export as CSV',
-  'export-md': 'Export as Markdown',
-  'social-preview': 'Social sharing preview',
-  'tag-ids': 'Tag identifier extraction',
-  audit: 'Storefront audit',
-  variants: 'Variant table',
-  'raw-tree': 'Raw data tree',
-  refresh: 'Live refresh',
-  uncapped: 'Uncapped copy and export',
-  'front-matter': 'YAML front matter',
-  delimiter: 'Delimiter choice',
-  evidence: 'Detection evidence',
-  versions: 'Library versions',
-};
 
 /** Markdown is not allowed in the store's detailed description; it is plain text. */
 function plain(text) {
@@ -48,7 +30,6 @@ function plain(text) {
 function listingFor(extension) {
   const listing = LISTINGS[extension.slug];
   const content = CONTENT[extension.slug];
-  const features = FEATURES[extension.slug];
   if (!listing || !content) throw new Error('No listing content for ' + extension.slug);
 
   if (listing.storeName.length > 75) {
@@ -128,30 +109,16 @@ function listingFor(extension) {
   push('  icon, and only until you navigate away. This is why the extension needs no');
   push('  access to your browsing history and no permission to run on every site.');
   push('• scripting - required to read the page once you have clicked the icon.');
-  push(
-    PRO_BY_DEFAULT
-      ? '• storage - keeps a single first-run timestamp on your own device. Nothing else.'
-      : '• storage - holds a licence key on your own device. Nothing else is stored.'
-  );
   push('');
-  push('That is the complete list. There is no background process and no host');
-  push('permissions.');
+  push('That is the complete list - two permissions. There is no storage, no');
+  push('background process and no host permissions.');
   push('');
-  if (PRO_BY_DEFAULT) {
-    push('EVERYTHING IS INCLUDED');
-    push('');
-    push('No account, no sign-up, no trial, no paid tier. Every feature works the');
-    push('moment you install it, including: ' +
-      features.pro.map((f) => LABELS[f] || f).join(', ') + '.');
-    push('');
-    push('The source is open: github.com/swanca/chrome-inspector-suite');
-  } else {
-    push('FREE AND PRO');
-    push('');
-    push('Inspection is free and stays free.');
-    push('');
-    push('Pro adds: ' + features.pro.map((f) => LABELS[f] || f).join(', ') + '.');
-  }
+  push('FREE AND OPEN SOURCE');
+  push('');
+  push('No account, no sign-up, no trial, no paid tier, no upsell. Every feature');
+  push('works the moment you install it.');
+  push('');
+  push('The source is open, MIT licensed: github.com/swanca/chrome-inspector-suite');
   push('');
   push('PAGES IT CANNOT READ');
   push('');
@@ -196,9 +163,6 @@ function listingFor(extension) {
   );
   push(
     '| `scripting` | Used to run a single read-only collector function in the page once the user has clicked the icon. It reads the DOM and returns data to the popup. It never modifies the page. |'
-  );
-  push(
-    '| `storage` | Stores a licence key on the user\'s own device so the paid tier does not require an account or a server. Nothing else is stored and nothing is transmitted. |'
   );
   push('');
   push('**Remote code**');

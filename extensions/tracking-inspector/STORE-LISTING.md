@@ -62,17 +62,16 @@ PERMISSIONS
   icon, and only until you navigate away. This is why the extension needs no
   access to your browsing history and no permission to run on every site.
 • scripting - required to read the page once you have clicked the icon.
-• storage - keeps a single first-run timestamp on your own device. Nothing else.
 
-That is the complete list. There is no background process and no host
-permissions.
+That is the complete list - two permissions. There is no storage, no
+background process and no host permissions.
 
-EVERYTHING IS INCLUDED
+FREE AND OPEN SOURCE
 
-No account, no sign-up, no trial, no paid tier. Every feature works the
-moment you install it, including: Export as CSV, Tag identifier extraction.
+No account, no sign-up, no trial, no paid tier, no upsell. Every feature
+works the moment you install it.
 
-The source is open: github.com/swanca/chrome-inspector-suite
+The source is open, MIT licensed: github.com/swanca/chrome-inspector-suite
 
 PAGES IT CANNOT READ
 
@@ -114,7 +113,6 @@ The tab that most often sends a submission back. Every answer here is "no".
 |---|---|
 | `activeTab` | The extension reads the page the user is on, but only after they click its toolbar icon. activeTab grants that access for that one tab and only until navigation, which avoids requesting host permissions for every site. |
 | `scripting` | Used to run a single read-only collector function in the page once the user has clicked the icon. It reads the DOM and returns data to the popup. It never modifies the page. |
-| `storage` | Stores a licence key on the user's own device so the paid tier does not require an account or a server. Nothing else is stored and nothing is transmitted. |
 
 **Remote code**
 

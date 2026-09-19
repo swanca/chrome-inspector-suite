@@ -11,7 +11,6 @@ import { detectStack, summarize, groupByCategory, toRows } from '../lib/stack.js
 import { describeBlockedUrl, getActiveTab, runInPage } from '../shared/page.js';
 import { el, clear, createToast, showState, pill, showVersion } from '../shared/ui.js';
 import { exportFilename, copyText, downloadText, toCsv } from '../shared/output.js';
-import { createLicenseGate } from '../shared/license-ui.js';
 
 const SLUG = 'tech-stack-detector';
 
@@ -24,18 +23,9 @@ const elements = {
   export: document.getElementById('export'),
   main: document.getElementById('main'),
   toast: document.getElementById('toast'),
-  pro: document.getElementById('pro'),
 };
 
 const toast = createToast(elements.toast);
-
-/** The Pro gate. Created first, because the button handlers close over it. */
-let gate = null;
-
-function renderBadge() {
-  clear(elements.pro);
-  elements.pro.appendChild(gate.badge());
-}
 
 /** @type {{signals: object, detected: Array}|null} */
 let state = null;
@@ -65,14 +55,13 @@ function renderTechnology(item) {
   const node = el('div', 'item');
   const body = el('div', 'item__body');
 
-  const version = item.version && gate.can('versions') ? ' ' + item.version : '';
-  body.appendChild(el('div', 'item__title', item.name + version));
+  body.appendChild(el('div', 'item__title', item.name + (item.version ? ' ' + item.version : '')));
 
   if (item.confidence === 'low') {
     body.appendChild(el('div', 'item__meta', 'One signal only - treat as a guess.'));
   }
 
-  if (elements.evidence.checked && gate.can('evidence')) {
+  if (elements.evidence.checked) {
     const tags = el('div', 'tags');
     for (const evidence of item.evidence) tags.appendChild(el('span', 'tag', evidence));
     body.appendChild(tags);
@@ -146,23 +135,10 @@ function handleExport() {
 async function init() {
   showVersion(document.querySelector('.brand'));
 
-  gate = createLicenseGate({
-    slug: SLUG,
-    name: 'Tech Stack Detector',
-    main: elements.main,
-    toast,
-    onChange: () => {
-      renderBadge();
-      render();
-    },
-  });
-  await gate.load();
-  renderBadge();
-
   elements.evidence.addEventListener('change', render);
   elements.confident.addEventListener('change', render);
   elements.copy.addEventListener('click', handleCopy);
-  elements.export.addEventListener('click', gate.require('export-csv', handleExport));
+  elements.export.addEventListener('click', handleExport);
 
   try {
     const tab = await getActiveTab();

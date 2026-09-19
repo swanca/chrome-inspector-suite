@@ -12,7 +12,6 @@ import { toMarkdown, toJson } from '../lib/format.js';
 import { describeBlockedUrl, getActiveTab, runInPage } from '../shared/page.js';
 import { el, clear, createToast, showState, showVersion } from '../shared/ui.js';
 import { exportFilename, copyText, downloadText } from '../shared/output.js';
-import { createLicenseGate } from '../shared/license-ui.js';
 
 const SLUG = 'seo-inspector';
 
@@ -26,18 +25,9 @@ const elements = {
   export: document.getElementById('export'),
   main: document.getElementById('main'),
   toast: document.getElementById('toast'),
-  pro: document.getElementById('pro'),
 };
 
 const toast = createToast(elements.toast);
-
-/** The Pro gate. Created first, because the button handlers close over it. */
-let gate = null;
-
-function renderBadge() {
-  clear(elements.pro);
-  elements.pro.appendChild(gate.badge());
-}
 
 /** @type {{data: object, audit: object}|null} */
 let state = null;
@@ -134,7 +124,7 @@ function render() {
     section.appendChild(el('h2', 'group__title', group.label));
     for (const item of rows) section.appendChild(renderFinding(item));
 
-    if (group.id === 'social' && !onlyIssues && gate.can('social-preview')) {
+    if (group.id === 'social' && !onlyIssues) {
       const preview = renderSocialPreview(state.data);
       if (preview) section.appendChild(preview);
     }
@@ -166,21 +156,8 @@ function handleExport() {
 async function init() {
   showVersion(document.querySelector('.brand'));
 
-  gate = createLicenseGate({
-    slug: SLUG,
-    name: 'SEO Inspector',
-    main: elements.main,
-    toast,
-    onChange: () => {
-      renderBadge();
-      render();
-    },
-  });
-  await gate.load();
-  renderBadge();
-
   elements.copy.addEventListener('click', handleCopy);
-  elements.export.addEventListener('click', gate.require('export-json', handleExport));
+  elements.export.addEventListener('click', handleExport);
   elements.onlyIssues.addEventListener('change', render);
 
   try {

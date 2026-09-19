@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Tracking Inspector - Find GTM, GA4, Meta Pixel & Trackers",
-  "version": "1.4.0",
+  "version": "2.0.0",
   "description": "See every analytics and advertising tag a page loads, with their IDs. 100% local - no tracking, no data collected.",
   "icons": {
     "16": "icons/icon16.png",
@@ -19,7 +19,6 @@
   },
   "permissions": [
     "activeTab",
-    "scripting",
-    "storage"
+    "scripting"
   ]
 }

@@ -24,9 +24,6 @@ const FILES = [
   ['page.js', join('src', 'shared', 'page.js')],
   ['ui.js', join('src', 'shared', 'ui.js')],
   ['output.js', join('src', 'shared', 'output.js')],
-  ['entitlements.js', join('src', 'shared', 'entitlements.js')],
-  ['license-ui.js', join('src', 'shared', 'license-ui.js')],
-  ['license-key.js', join('src', 'shared', 'license-key.js')],
   ['popup.css', join('src', 'popup', 'base.css')],
 ];
 

@@ -34,15 +34,14 @@ No build step. The folder *is* the extension.
 
 ## Permissions
 
-Every extension in this suite declares exactly three permissions and nothing else:
+Every extension in this suite declares exactly two permissions and nothing else:
 
 | Permission  | Why |
 |-------------|-----|
 | `activeTab` | Grants access to the current tab **only at the moment you click the icon**, and only until you navigate away. This is why none of these extensions needs `host_permissions`, and why none of them can see your browsing history. |
 | `scripting` | Required to run the read-only collector in the page. |
-| `storage`   | Holds a Pro license key on your own device. Nothing else is stored, and it never leaves the machine. |
 
-No background service worker, no `tabs`, no host permissions.
+No background service worker, no `storage`, no `tabs`, no host permissions.
 
 ### Privacy
 
@@ -68,9 +67,6 @@ shared/                  Single source of truth for code used by every extension
   page.js                Tab access and the "this page is off-limits" explanations
   ui.js                  DOM helpers - no framework, no innerHTML
   output.js              Copy, download, CSV writing
-  entitlements.js        Licence parsing, verification and the feature catalogue
-  license-ui.js          The Pro gate: badge, upgrade panel, key entry
-  license-key.js         Generated public key (safe to ship)
   popup.css              The design system, light and dark
 
 extensions/<name>/
@@ -137,7 +133,7 @@ themselves have zero dependencies.
 npm test
 ```
 
-385 tests cover the pure logic of all ten extensions plus the shared code. They
+369 tests cover the pure logic of all ten extensions plus the shared code. They
 run under plain Node: no DOM, no browser mocks, no test framework.
 
 | Command | What it does |
@@ -153,8 +149,6 @@ run under plain Node: no DOM, no browser mocks, no test framework.
 | `npm run release` | Regenerates everything, then packages |
 | `node tools/import-logo.mjs <slug> <logo.png>` | Turns a designed PNG into the four icon sizes |
 | `node tools/fit-screenshot.mjs <slug> <shot.png>` | Fits a screenshot to the store's 1280x800 |
-| `node tools/make-keypair.mjs` | Creates the licensing key pair (once, ever) |
-| `node tools/make-license.mjs --email x@y.z` | Signs a Pro license key |
 
 ### What `npm run check` verifies
 
@@ -163,7 +157,7 @@ these are checked statically for every extension:
 
 - The manifest is valid MV3 and every file it points at exists
 - The Web Store description fits in 132 characters
-- No permission beyond `activeTab`, `scripting` and `storage`
+- No permission beyond `activeTab` and `scripting`
 - Every `getElementById` target exists in the popup markup
 - Every CSS class used by markup or script has a rule
 - No inline `<script>`, which the MV3 CSP would block
@@ -180,14 +174,12 @@ these are checked statically for every extension:
 
 ---
 
-## Everything is included
+## Free, in both senses
 
-There is no paid tier, no account and no trial. Every feature in every
-extension works the moment it is installed.
+Every feature of every extension works the moment it is installed. No account,
+no sign-up, no trial, no paid tier, no upsell, and nothing held back.
 
-The feature catalogue in `shared/entitlements.js` still exists and is still
-tested - it is what keeps the ten extensions describing themselves
-consistently - but `PRO_BY_DEFAULT` ships it unlocked.
+The source is MIT licensed. Fork it, ship it, sell it if you like.
 
 ---
 

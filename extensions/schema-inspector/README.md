@@ -21,13 +21,6 @@ Everything runs inside your browser. No account, no server, no analytics, no sto
 - A missing **required** property is an error; a missing **recommended** one is only a warning. Unknown types are reported as unchecked rather than as broken.
 - Type aliases are handled: a `BlogPosting` is validated against the `Article` requirements.
 
-## What you get
-
-Everything. There is no paid tier, no account and no trial - every feature below works the moment you install it.
-
-- Export as JSON
-- Raw data tree
-
 ---
 
 ## Install locally (Load unpacked)
@@ -48,9 +41,8 @@ To pick up code changes, press the reload arrow on the extension card in `chrome
 |-------------|-----|
 | `activeTab` | Grants access to the current tab **only at the moment you click the icon**, and only until you navigate away. This is why no `host_permissions` are needed and the extension has no access to your browsing history. |
 | `scripting` | Required to run the read-only collector in the page and read what it needs. |
-| `storage`   | Keeps a single first-run timestamp on this device. Nothing else is stored, and nothing is ever transmitted. |
 
-That is the complete list. There is no background service worker, no `tabs` permission and no host permissions.
+That is the complete list. There is no background service worker, no `storage`, no `tabs` permission and no host permissions.
 
 ## Privacy
 

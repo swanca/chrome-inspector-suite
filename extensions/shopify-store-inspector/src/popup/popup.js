@@ -19,7 +19,6 @@ import {
 import { describeBlockedUrl, getActiveTab, runInPage } from '../shared/page.js';
 import { el, clear, createToast, showState, pill, row, showVersion } from '../shared/ui.js';
 import { exportFilename, copyText, downloadText, toCsv } from '../shared/output.js';
-import { createLicenseGate } from '../shared/license-ui.js';
 
 const SLUG = 'shopify-store-inspector';
 
@@ -35,18 +34,9 @@ const elements = {
   export: document.getElementById('export'),
   main: document.getElementById('main'),
   toast: document.getElementById('toast'),
-  pro: document.getElementById('pro'),
 };
 
 const toast = createToast(elements.toast);
-
-/** The Pro gate. Created first, because the button handlers close over it. */
-let gate = null;
-
-function renderBadge() {
-  clear(elements.pro);
-  elements.pro.appendChild(gate.badge());
-}
 
 /** @type {object|null} */
 let state = null;
@@ -86,14 +76,12 @@ function renderAudit() {
     return;
   }
 
-  const { shown, hidden } = gate.preview('audit', audit.findings);
-
   const section = el('section', 'group');
   section.appendChild(
     el('h2', 'group__title', audit.findings.length + ' finding' + (audit.findings.length === 1 ? '' : 's'))
   );
 
-  for (const finding of shown) {
+  for (const finding of audit.findings) {
     const node = el('div', 'finding');
     node.appendChild(
       el('span', 'finding__badge finding__badge--' + finding.status, BADGE[finding.status] || '-')
@@ -102,9 +90,6 @@ function renderAudit() {
     node.appendChild(el('span', 'finding__message', finding.message));
     section.appendChild(node);
   }
-
-  const lock = gate.lockNotice('audit', hidden);
-  if (lock) section.appendChild(lock);
 
   elements.main.appendChild(section);
 
@@ -182,10 +167,8 @@ function renderVariants() {
   head.appendChild(headRow);
   table.appendChild(head);
 
-  const { shown, hidden } = gate.preview('variants', variants.slice(0, MAX_VARIANT_ROWS));
-
   const body = el('tbody');
-  for (const variant of shown) {
+  for (const variant of variants.slice(0, MAX_VARIANT_ROWS)) {
     const tr = el('tr');
     tr.appendChild(el('td', null, variant.title || variant.id));
     tr.appendChild(el('td', null, variant.sku || '-'));
@@ -207,9 +190,6 @@ function renderVariants() {
   scroller.appendChild(table);
   elements.main.appendChild(scroller);
 
-  const lock = gate.lockNotice('variants', hidden);
-  if (lock) elements.main.appendChild(lock);
-
   if (variants.length > MAX_VARIANT_ROWS) {
     elements.main.appendChild(
       el('p', 'state__hint', 'Showing ' + MAX_VARIANT_ROWS + ' of ' + variants.length + '.')
@@ -227,8 +207,6 @@ function render() {
 
   for (const button of elements.views.querySelectorAll('button')) {
     button.classList.toggle('btn--active', button.dataset.view === view);
-    button.textContent = button.textContent.replace(/ \u00b7 Pro$/, '');
-    if (!gate.can(button.dataset.view)) button.textContent += ' \u00b7 Pro';
   }
 }
 
@@ -283,33 +261,14 @@ function handleExport() {
 async function init() {
   showVersion(document.querySelector('.brand'));
 
-  gate = createLicenseGate({
-    slug: SLUG,
-    name: 'Shopify Store Inspector',
-    main: elements.main,
-    toast,
-    onChange: () => {
-      renderBadge();
-      render();
-    },
-  });
-  await gate.load();
-  renderBadge();
-
-  // The audit is the paid view, so free users open on Details instead of
-  // being met by an upgrade panel.
-  view = gate.can('audit') || gate.previewable('audit') ? 'audit' : 'details';
-
   elements.views.addEventListener('click', (event) => {
     const button = event.target.closest('button[data-view]');
     if (!button) return;
-    const next = button.dataset.view;
-    if (!gate.can(next) && !gate.previewable(next)) return gate.showPanel(next);
-    view = next;
+    view = button.dataset.view;
     render();
   });
   elements.copy.addEventListener('click', handleCopy);
-  elements.export.addEventListener('click', gate.require('export-csv', handleExport));
+  elements.export.addEventListener('click', handleExport);
 
   try {
     const tab = await getActiveTab();

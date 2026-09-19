@@ -11,7 +11,6 @@ import { expandGrid, describeTable, measureGrid, trimGrid } from '../lib/table.j
 import { describeBlockedUrl, getActiveTab, runInPage } from '../shared/page.js';
 import { el, clear, createToast, showState, pill, showVersion } from '../shared/ui.js';
 import { exportFilename, copyText, downloadText, toCsv } from '../shared/output.js';
-import { createLicenseGate } from '../shared/license-ui.js';
 
 const SLUG = 'table-to-csv';
 
@@ -29,18 +28,9 @@ const elements = {
   export: document.getElementById('export'),
   main: document.getElementById('main'),
   toast: document.getElementById('toast'),
-  pro: document.getElementById('pro'),
 };
 
 const toast = createToast(elements.toast);
-
-/** The Pro gate. Created first, because the button handlers close over it. */
-let gate = null;
-
-function renderBadge() {
-  clear(elements.pro);
-  elements.pro.appendChild(gate.badge());
-}
 
 /** @type {{data: object}|null} */
 let state = null;
@@ -124,9 +114,7 @@ function render() {
 // --- Output actions ----------------------------------------------------------
 
 function csv() {
-  // The delimiter choice is a Pro feature; free exports use a comma.
-  const delimiter = gate.can('delimiter') ? elements.delimiter.value : ',';
-  return toCsv(currentGrid(), { delimiter });
+  return toCsv(currentGrid(), { delimiter: elements.delimiter.value });
 }
 
 async function handleCopy() {
@@ -148,23 +136,10 @@ function handleExport() {
 async function init() {
   showVersion(document.querySelector('.brand'));
 
-  gate = createLicenseGate({
-    slug: SLUG,
-    name: 'Table to CSV',
-    main: elements.main,
-    toast,
-    onChange: () => {
-      renderBadge();
-      render();
-    },
-  });
-  await gate.load();
-  renderBadge();
-
   elements.table.addEventListener('change', render);
   elements.trim.addEventListener('change', render);
   elements.copy.addEventListener('click', handleCopy);
-  elements.export.addEventListener('click', gate.require('export-csv', handleExport));
+  elements.export.addEventListener('click', handleExport);
 
   try {
     const tab = await getActiveTab();

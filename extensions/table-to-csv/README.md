@@ -21,13 +21,6 @@ Everything runs inside your browser. No account, no server, no analytics, no sto
 - Spans are the whole problem. A cell with `rowspan="3"` occupies the same column in the next two rows and pushes later cells to the right; getting that wrong silently misaligns every column after it. The grid builder has a test for each case.
 - The CSV is written with a UTF-8 BOM so Excel reads accented characters correctly, and fields that would be executed as formulas are prefixed so they stay text.
 
-## What you get
-
-Everything. There is no paid tier, no account and no trial - every feature below works the moment you install it.
-
-- Export as CSV
-- Delimiter choice
-
 ---
 
 ## Install locally (Load unpacked)
@@ -48,9 +41,8 @@ To pick up code changes, press the reload arrow on the extension card in `chrome
 |-------------|-----|
 | `activeTab` | Grants access to the current tab **only at the moment you click the icon**, and only until you navigate away. This is why no `host_permissions` are needed and the extension has no access to your browsing history. |
 | `scripting` | Required to run the read-only collector in the page and read what it needs. |
-| `storage`   | Keeps a single first-run timestamp on this device. Nothing else is stored, and nothing is ever transmitted. |
 
-That is the complete list. There is no background service worker, no `tabs` permission and no host permissions.
+That is the complete list. There is no background service worker, no `storage`, no `tabs` permission and no host permissions.
 
 ## Privacy
 
